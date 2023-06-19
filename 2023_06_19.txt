@@ -10,12 +10,12 @@
     xhr.open('POST', '{{ url_for('upload') }}', true);
 
     // Progress event listener
-    xhr.upload.addEventListener('progress', function(event) {
+    xhr.upload.onprogress = function(event) {
       if (event.lengthComputable) {
         var progress = (event.loaded / event.total) * 100;
         document.getElementById('progress-bar-fill').style.width = progress + '%';
       }
-    });
+    };
 
     // Completion event listener
     xhr.onload = function() {
