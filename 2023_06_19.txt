@@ -25,13 +25,13 @@
       if (xhr.status === 200) {
         // File upload success
         console.log('File uploaded successfully!');
+        submitButton.disabled = false; // Re-enable the submit button
+        event.target.submit(); // Manually trigger form submission
       } else {
         // File upload error
         console.error('Error uploading file.');
+        submitButton.disabled = false; // Re-enable the submit button
       }
-
-      // Re-enable the submit button
-      submitButton.disabled = false;
     };
 
     // Disable the submit button during upload
