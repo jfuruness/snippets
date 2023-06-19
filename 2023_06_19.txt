@@ -23,9 +23,15 @@
     formData.append('file', file);
 
     // Add other form fields to the FormData object
-    var otherInputs = document.querySelectorAll('form input:not([type="file"])');
+    var otherInputs = document.querySelectorAll('form input:not([type="file"]):not([type="radio"]), form select');
     for (var i = 0; i < otherInputs.length; i++) {
       var input = otherInputs[i];
+      formData.append(input.name, input.value);
+    }
+
+    var radioInputs = document.querySelectorAll('form input[type="radio"]:checked');
+    for (var i = 0; i < radioInputs.length; i++) {
+      var input = radioInputs[i];
       formData.append(input.name, input.value);
     }
 
