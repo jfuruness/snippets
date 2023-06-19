@@ -1,0 +1,36 @@
+
+<script>
+  document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault();  // Prevent form submission
+
+    var fileInput = document.querySelector('input[type="file"]');
+    var file = fileInput.files[0];
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '{{ url_for('upload') }}', true);
+
+    // Progress event listener
+    xhr.upload.addEventListener('progress', function(event) {
+      if (event.lengthComputable) {
+        var progress = (event.loaded / event.total) * 100;
+        document.getElementById('progress-bar-fill').style.width = progress + '%';
+      }
+    });
+
+    // Completion event listener
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        // File upload success
+        console.log('File uploaded successfully!');
+      } else {
+        // File upload error
+        console.error('Error uploading file.');
+      }
+    };
+
+    // Send the file
+    var formData = new FormData();
+    formData.append('file', file);
+    xhr.send(formData);
+  });
+</script>
