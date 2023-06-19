@@ -1,3 +1,4 @@
+
 <script>
   document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault();  // Prevent form submission
@@ -7,6 +8,16 @@
 
     var progressBar = document.getElementById('progress-bar-fill');
     var submitButton = document.querySelector('input[type="submit"]');
+
+    // Perform form validation
+    if (file === undefined) {
+      // File is not selected, display an error message or perform necessary actions
+      console.error('Please select a file.');
+      return;
+    }
+
+    // Disable the submit button during upload
+    submitButton.disabled = true;
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '{{ url_for('insert_spdx') }}', true);
@@ -34,13 +45,9 @@
       }
     };
 
-    // Disable the submit button during upload
-    submitButton.disabled = true;
-
     // Send the file
     var formData = new FormData();
     formData.append('file', file);
     xhr.send(formData);
   });
 </script>
-
