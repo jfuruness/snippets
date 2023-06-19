@@ -19,6 +19,16 @@
     // Disable the submit button during upload
     submitButton.disabled = true;
 
+    var formData = new FormData();
+    formData.append('file', file);
+
+    // Add other form fields to the FormData object
+    var otherInputs = document.querySelectorAll('form input:not([type="file"])');
+    for (var i = 0; i < otherInputs.length; i++) {
+      var input = otherInputs[i];
+      formData.append(input.name, input.value);
+    }
+
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '{{ url_for('insert_spdx') }}', true);
 
@@ -45,9 +55,7 @@
       }
     };
 
-    // Send the file
-    var formData = new FormData();
-    formData.append('file', file);
+    // Send the file and form data
     xhr.send(formData);
   });
 </script>
