@@ -5,7 +5,6 @@
     var fileInput = document.querySelector('input[type="file"]');
     var file = fileInput.files[0];
 
-    var progressBar = document.getElementById('progress-bar-fill');
     var submitButton = document.querySelector('input[type="submit"]');
 
     // Perform form validation
@@ -18,22 +17,6 @@
     // Disable the submit button during upload
     submitButton.disabled = true;
 
-    var formData = new FormData();
-    formData.append('file', file);
-
-    // Add other form fields to the FormData object
-    var otherInputs = document.querySelectorAll('form input:not([type="file"]):not([type="radio"]), form select');
-    for (var i = 0; i < otherInputs.length; i++) {
-      var input = otherInputs[i];
-      formData.append(input.name, input.value);
-    }
-
-    var radioInputs = document.querySelectorAll('form input[type="radio"]:checked');
-    for (var i = 0; i < radioInputs.length; i++) {
-      var input = radioInputs[i];
-      formData.append(input.name, input.value);
-    }
-
     var xhr = new XMLHttpRequest();
     xhr.open('POST', '{{ url_for('insert_spdx') }}', true);
 
@@ -41,8 +24,8 @@
     xhr.upload.onprogress = function(event) {
       if (event.lengthComputable) {
         var progress = (event.loaded / event.total) * 100;
-        progressBar.style.width = progress + '%';
-        progressBar.textContent = progress.toFixed(2) + '% Complete';
+        submitButton.value = 'Uploading, ' + progress.toFixed(2) + '% complete';
+        submitButton.style.background = 'linear-gradient(to right, #4caf50 0%, #4caf50 ' + progress + '%, #f1f1f1 ' + progress + '%)';
       }
     };
 
@@ -51,6 +34,8 @@
       if (xhr.status === 200) {
         // File upload success
         console.log('File uploaded successfully!');
+        submitButton.value = 'Upload Complete';
+        submitButton.style.background = '#4caf50';
         submitButton.disabled = false; // Re-enable the submit button
         event.target.submit(); // Manually trigger form submission
       } else {
@@ -60,7 +45,9 @@
       }
     };
 
-    // Send the file and form data
+    // Send the file
+    var formData = new FormData();
+    formData.append('file', file);
     xhr.send(formData);
   });
 </script>
