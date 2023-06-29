@@ -1,53 +1,65 @@
-<script>
-  document.querySelector('form').addEventListener('submit', function(event) {
-    event.preventDefault();  // Prevent form submission
+document.getElementById('upload-form').addEventListener('submit', function(event) {
+  event.preventDefault();  // Prevent form submission
 
-    var fileInput = document.querySelector('input[type="file"]');
-    var file = fileInput.files[0];
+  var fileInput = document.querySelector('input[type="file"]');
+  var file = fileInput.files[0];
 
-    var submitButton = document.querySelector('input[type="submit"]');
+  var submitButton = document.querySelector('input[type="submit"]');
 
-    // Perform form validation
-    if (file === undefined) {
-      // File is not selected, display an error message or perform necessary actions
-      console.error('Please select a file.');
-      return;
+  // Perform form validation
+  if (file === undefined) {
+    // File is not selected, display an error message or perform necessary actions
+    console.error('Please select a file.');
+    return;
+  }
+
+  // Disable the submit button during upload
+  submitButton.disabled = true;
+
+  var formData = new FormData(this);  // 'this' refers to the form element
+  formData.append('file', file);
+
+  // Add other form fields to the FormData object
+  var otherInputs = document.querySelectorAll('form input:not([type="file"]):not([type="radio"]), form select');
+  for (var i = 0; i < otherInputs.length; i++) {
+    var input = otherInputs[i];
+    formData.append(input.name, input.value);
+  }
+
+  var radioInputs = document.querySelectorAll('form input[type="radio"]:checked');
+  for (var i = 0; i < radioInputs.length; i++) {
+    var input = radioInputs[i];
+    formData.append(input.name, input.value);
+  }
+
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', insertSpdxUrl, true);
+
+  // Progress event listener
+  xhr.upload.onprogress = function(event) {
+    if (event.lengthComputable) {
+      var progress = (event.loaded / event.total) * 100;
+      submitButton.value = 'Uploading, ' + progress.toFixed(2) + '% complete';
+      submitButton.style.background = 'linear-gradient(to right, #4caf50 0%, #4caf50 ' + progress + '%, #f1f1f1 ' + progress + '%)';
     }
+  };
 
-    // Disable the submit button during upload
-    submitButton.disabled = true;
+  // Completion event listener
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // File upload success
+      console.log('File uploaded successfully!');
+      submitButton.value = 'Upload Complete';
+      submitButton.style.background = '#4caf50';
+      submitButton.disabled = false; // Re-enable the submit button
+      event.target.submit(); // Manually trigger form submission
+    } else {
+      // File upload error
+      console.error('Error uploading file.');
+      submitButton.disabled = false; // Re-enable the submit button
+    }
+  };
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '{{ url_for('insert_spdx') }}', true);
-
-    // Progress event listener
-    xhr.upload.onprogress = function(event) {
-      if (event.lengthComputable) {
-        var progress = (event.loaded / event.total) * 100;
-        submitButton.value = 'Uploading, ' + progress.toFixed(2) + '% complete';
-        submitButton.style.background = 'linear-gradient(to right, #4caf50 0%, #4caf50 ' + progress + '%, #f1f1f1 ' + progress + '%)';
-      }
-    };
-
-    // Completion event listener
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        // File upload success
-        console.log('File uploaded successfully!');
-        submitButton.value = 'Upload Complete';
-        submitButton.style.background = '#4caf50';
-        submitButton.disabled = false; // Re-enable the submit button
-        event.target.submit(); // Manually trigger form submission
-      } else {
-        // File upload error
-        console.error('Error uploading file.');
-        submitButton.disabled = false; // Re-enable the submit button
-      }
-    };
-
-    // Send the file
-    var formData = new FormData();
-    formData.append('file', file);
-    xhr.send(formData);
-  });
-</script>
+  // Send the file and form data
+  xhr.send(formData);
+});
