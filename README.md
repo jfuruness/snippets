@@ -38,10 +38,19 @@ Let's create a user called jfuruness@gmail.com with a password of password.
 Set the role to student. First and last name don't matter.
 
 Then let's "login".
-To do this, go to the swagger docs at localhost:8000 and login with the user we just created.
+To do this, go to the swagger docs at localhost:8000/docs and login with the user we just created.
 Logging in will also set the login cookie for this user
 
 Then we can logout simply by calling the logout endpoint, which will remove this cookie.
+
+Now login again so that we are authenticated for the remainder of the endpoints.
+
+At this point lets try getting all the possible labs that we can try.
+To do this, simply call the /labs/get_labs endpoint after logging in.
+
+Then try to download a lab.
+This will cause the lab_template behind the scenes to create a unique lab for the student, which the user will then have to complete.
+Each lab has a unique solution.
 
 
 #### For developers: How to add a lab
