@@ -1,65 +1,125 @@
-document.getElementById('upload-form').addEventListener('submit', function(event) {
-  event.preventDefault();  // Prevent form submission
 
-  var fileInput = document.querySelector('input[type="file"]');
-  var file = fileInput.files[0];
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Company Document</title>
+    <style>
+        body {
+            margin: 50px 100px 20px 100px; /* Top, Right, Bottom, Left */
+        }
+        .centered {
+            text-align: center;
+        }
+        .left-aligned {
+            text-align: left;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .table1 th {
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            text-align: left;
+            padding: 5px;
+        }
+        .table1 td {
+            text-align: left;
+            padding: 5px;
+        }
+        .table1 tr:last-child td {
+            border-bottom: 1px solid black;
+        }
+        .table2 th, .table2 td {
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            padding: 5px;
+            text-align: left;
+        }
+        .table2 th:first-child, .table2 td:first-child {
+            border-left: 1px solid black;
+        }
+        .table2 th:last-child, .table2 td:last-child {
+            border-right: 1px solid black;
+        }
+        .table2 tr:first-child th {
+            border-top: 1px solid black;
+        }
+        .table2 tr:nth-child(2) td {
+            border-top: 1px solid black;
+        }
+        .table2 tr:last-child td {
+            border-bottom: 1px solid black;
+        }
+    </style>
+</head>
+<body>
 
-  var submitButton = document.querySelector('input[type="submit"]');
+    <div class="centered">
+        <p><strong>Company</strong></p>
+    </div>
 
-  // Perform form validation
-  if (file === undefined) {
-    // File is not selected, display an error message or perform necessary actions
-    console.error('Please select a file.');
-    return;
-  }
+    <div class="left-aligned">
+        <p><strong>Name:</strong> name_value</p>
+        <p><strong>Scope:</strong> scope_value</p>
+        <p><strong>Description:</strong> description_value</p>
+        <p><strong>Representation:</strong> representation_value</p>
+        <p><strong>Number of Points:</strong> number_of_points_value</p>
+    </div>
+    <br>
+    <table class="table1">
+        <tr>
+            <th>Mode</th>
+            <th>Axis</th>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Size</th>
+            <th>Units</th>
+        </tr>
+        <tr>
+            <td>Input</td>
+            <td>X Axis</td>
+            <td>X</td>
+            <td>float</td>
+            <td></td>
+            <td>RPM</td>
+        </tr>
+        <tr>
+            <td>Output</td>
+            <td>Y Axis</td>
+            <td>Y</td>
+            <td>float</td>
+            <td>..</td>
+            <td>PSID</td>
+        </tr>
+    </table>
 
-  // Disable the submit button during upload
-  submitButton.disabled = true;
+    <br>
+    <br>
 
-  var formData = new FormData(this);  // 'this' refers to the form element
-  formData.append('file', file);
+    <hr>
 
-  // Add other form fields to the FormData object
-  var otherInputs = document.querySelectorAll('form input:not([type="file"]):not([type="radio"]), form select');
-  for (var i = 0; i < otherInputs.length; i++) {
-    var input = otherInputs[i];
-    formData.append(input.name, input.value);
-  }
+    <div class="centered">
+        <p><strong>TITLE</strong></p>
+    </div>
 
-  var radioInputs = document.querySelectorAll('form input[type="radio"]:checked');
-  for (var i = 0; i < radioInputs.length; i++) {
-    var input = radioInputs[i];
-    formData.append(input.name, input.value);
-  }
+    <table class="table2">
+        <tr>
+            <th>PT</th>
+            <th>X_TABLE</th>
+            <th>Y_TABLE</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>10000</td>
+            <td>15</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>10000</td>
+            <td>15</td>
+        </tr>
+    </table>
 
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', insertSpdxUrl, true);
-
-  // Progress event listener
-  xhr.upload.onprogress = function(event) {
-    if (event.lengthComputable) {
-      var progress = (event.loaded / event.total) * 100;
-      submitButton.value = 'Uploading, ' + progress.toFixed(2) + '% complete';
-      submitButton.style.background = 'linear-gradient(to right, #4caf50 0%, #4caf50 ' + progress + '%, #f1f1f1 ' + progress + '%)';
-    }
-  };
-
-  // Completion event listener
-  xhr.onload = function() {
-    if (xhr.status === 200) {
-      // File upload success
-      console.log('File uploaded successfully!');
-      submitButton.value = 'Upload Complete';
-      submitButton.style.background = '#4caf50';
-      submitButton.disabled = false; // Re-enable the submit button
-      event.target.submit(); // Manually trigger form submission
-    } else {
-      // File upload error
-      console.error('Error uploading file.');
-      submitButton.disabled = false; // Re-enable the submit button
-    }
-  };
-
-  // Send the file and form data
-  xhr.send(formData);
-});
+</body>
+</html>
